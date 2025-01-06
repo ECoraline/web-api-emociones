@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificador de Emociones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e7f7e7;
+            color: #4CAF50;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Identificador de Emociones</h1>
+        <p>Introduce un texto sobre como te sientes para ayudarte a identificar tus emociones, puedes escribir cosas que te han pasado o tus sentimientos.</p>
+        <textarea id="texto" rows="6" placeholder="Escribe el texto aquí..."></textarea><br>
+        <button onclick="enviarTexto()">Identificar Emoción</button>
+
+        <div class="result" id="resultado">
+            Emoción identificada: <span id="emocion"></span>
+        </div>
+    </div>
+
+    <script>
+        function enviarTexto() {
+            const texto = document.getElementById("texto").value;
+            if (!texto.trim()) {
+                alert("Por favor, ingresa un texto.");
+                return;
+            }
+
+            // Definimos el objeto JSON que vamos a enviar
+            const data = {
+                "texto": texto
+            };
+
+            // Configuramos la solicitud Fetch para hacer un POST
+            fetch('https://web-production-c4d6.up.railway.app/identificar-emocion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())  // Usamos .text() en lugar de .json()
+            .then(data => {
+                // Mostramos la emoción identificada (la respuesta será texto plano)
+                document.getElementById("emocion").textContent = data;
+                document.getElementById("resultado").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Error al conectar con la API:", error);
+                alert("Hubo un error al procesar la solicitud.");
+            });
+        }
+    </script>
+</body>
+</html>
